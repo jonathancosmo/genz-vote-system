@@ -1,11 +1,9 @@
 # GenZ Vote System
-
-**Project by Amine Ridal (w2zard)**
+**Project by w2zard**
 
 ## Decentralized Voting System Documentation
 
 ### Overview
-
 This is a comprehensive decentralized voting system designed for secure, transparent, and tamper-proof elections. The system leverages blockchain technology and cryptographic principles to ensure vote integrity and voter anonymity.
 
 ### Key Features
@@ -52,216 +50,42 @@ This is a comprehensive decentralized voting system designed for secure, transpa
 4. **Vote Tallying System**
    - Automated counting mechanism
    - Real-time result aggregation
-   - Statistical verification tools
+   - Cryptographic verification of tallies
 
 5. **Audit & Verification Module**
    - Public ledger access
    - Vote verification tools
-   - Dispute resolution system
+   - Transparency dashboard
+
+#### Technology Stack
+
+- **Blockchain**: Ethereum-based private network
+- **Smart Contracts**: Solidity
+- **Backend**: Node.js with Express
+- **Frontend**: React.js with Web3.js
+- **Database**: IPFS for distributed storage
+- **Cryptography**: OpenSSL, Web3.py
+- **Authentication**: OAuth 2.0, JWT tokens
 
 ### Security Measures
 
-#### Cryptographic Protection
-- **RSA-4096**: Asymmetric encryption for voter authentication
-- **AES-256**: Symmetric encryption for vote data
-- **SHA-256**: Hashing for data integrity verification
-- **Digital Signatures**: Non-repudiation and authenticity
+#### Cryptographic Security
+- **End-to-End Encryption**: AES-256 encryption for all data transmission
+- **Digital Signatures**: ECDSA for vote authentication
+- **Hash Functions**: SHA-256 for data integrity
+- **Key Management**: Hardware Security Modules (HSM) for key storage
 
-#### Attack Prevention
-- **DDoS Protection**: Distributed architecture prevents service disruption
-- **Sybil Attack Prevention**: Identity verification prevents fake voter creation
-- **51% Attack Mitigation**: Consensus mechanism requires supermajority
-- **Man-in-the-Middle Protection**: TLS 1.3 for all communications
+#### Network Security
+- **DDoS Protection**: Rate limiting and traffic filtering
+- **Firewall**: Application-level firewall configuration
+- **Intrusion Detection**: Real-time monitoring and alerting
+- **Secure Communications**: TLS 1.3 for all connections
 
-### Voting Process Flow
-
-1. **Registration Phase**
-   - Voter registers and receives cryptographic credentials
-   - Identity verified through secure channels
-   - Voter added to eligibility list
-
-2. **Authentication Phase**
-   - Voter logs in using multi-factor authentication
-   - System verifies voter eligibility
-   - One-time voting token generated
-
-3. **Voting Phase**
-   - Voter selects candidates/options
-   - Vote encrypted and signed
-   - Vote submitted to blockchain network
-   - Confirmation receipt generated
-
-4. **Tallying Phase**
-   - Votes aggregated from blockchain
-   - Automated counting process
-   - Results published on public ledger
-
-5. **Verification Phase**
-   - Voters can verify their vote was counted
-   - Public can verify overall tallies
-   - Audit logs available for review
-
-### Smart Contract Implementation
-
-```solidity
-pragma solidity ^0.8.0;
-
-contract VotingSystem {
-    struct Vote {
-        bytes32 voteHash;
-        uint256 timestamp;
-        bool counted;
-    }
-    
-    mapping(address => bool) public hasVoted;
-    mapping(bytes32 => uint256) public voteCounts;
-    
-    address public admin;
-    bool public votingActive;
-    
-    event VoteCast(bytes32 indexed voteHash, uint256 timestamp);
-    event VotingStatusChanged(bool active);
-    
-    modifier onlyAdmin() {
-        require(msg.sender == admin, "Only admin can perform this action");
-        _;
-    }
-    
-    modifier votingIsActive() {
-        require(votingActive, "Voting is not active");
-        _;
-    }
-    
-    constructor() {
-        admin = msg.sender;
-        votingActive = false;
-    }
-    
-    function startVoting() public onlyAdmin {
-        votingActive = true;
-        emit VotingStatusChanged(true);
-    }
-    
-    function endVoting() public onlyAdmin {
-        votingActive = false;
-        emit VotingStatusChanged(false);
-    }
-    
-    function castVote(bytes32 _voteHash) public votingIsActive {
-        require(!hasVoted[msg.sender], "Already voted");
-        
-        hasVoted[msg.sender] = true;
-        voteCounts[_voteHash]++;
-        
-        emit VoteCast(_voteHash, block.timestamp);
-    }
-    
-    function getVoteCount(bytes32 _voteHash) public view returns (uint256) {
-        return voteCounts[_voteHash];
-    }
-    
-    function hasVoterVoted(address _voter) public view returns (bool) {
-        return hasVoted[_voter];
-    }
-}
-```
-
-### API Endpoints
-
-#### Authentication
-- `POST /api/auth/register` - Register new voter
-- `POST /api/auth/login` - Authenticate voter
-- `POST /api/auth/verify` - Verify voter credentials
-
-#### Voting
-- `GET /api/elections/active` - Get active elections
-- `POST /api/vote/cast` - Submit encrypted vote
-- `GET /api/vote/verify/:receipt` - Verify vote was counted
-
-#### Results
-- `GET /api/results/:electionId` - Get election results
-- `GET /api/results/live` - Real-time vote counts
-
-#### Audit
-- `GET /api/audit/transaction/:id` - Get transaction details
-- `GET /api/audit/voter/:token` - Verify voter participation
-
-### Deployment Guide
-
-#### Prerequisites
-- Node.js v16+
-- Ethereum-compatible blockchain network
-- PostgreSQL database
-- Redis for session management
-
-#### Installation Steps
-
-```bash
-# Clone repository
-git clone https://github.com/jonathancosmo/genz-vote-system.git
-cd genz-vote-system
-
-# Install dependencies
-npm install
-
-# Configure environment
-cp .env.example .env
-# Edit .env with your configuration
-
-# Deploy smart contracts
-npm run deploy:contracts
-
-# Start the application
-npm run start
-```
-
-#### Configuration
-
-```env
-# Blockchain Configuration
-BLOCKCHAIN_NETWORK=ethereum
-BLOCKCHAIN_RPC_URL=https://your-node-url
-CONTRACT_ADDRESS=0x...
-
-# Database Configuration
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=voting_system
-DB_USER=admin
-DB_PASSWORD=secure_password
-
-# Security Configuration
-JWT_SECRET=your_jwt_secret
-ENCRYPTION_KEY=your_encryption_key
-
-# Server Configuration
-PORT=3000
-ENVIRONMENT=production
-```
-
-### Testing
-
-#### Unit Tests
-```bash
-npm run test:unit
-```
-
-#### Integration Tests
-```bash
-npm run test:integration
-```
-
-#### Security Audits
-```bash
-npm run security:audit
-```
-
-### Performance Metrics
-
-- **Transaction Throughput**: 1000+ votes per second
-- **Confirmation Time**: < 3 seconds per vote
-- **Network Latency**: < 100ms average
-- **Uptime**: 99.9% availability
+#### Access Control
+- **Role-Based Access Control (RBAC)**: Different permission levels for administrators, auditors, and voters
+- **Multi-Factor Authentication**: Required for all administrative actions
+- **Session Management**: Secure token-based session handling
+- **Audit Logging**: Complete logging of all system access and changes
 
 ### Compliance & Standards
 
@@ -305,7 +129,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### Contributors
 
-- **Amine Ridal (w2zard)** - Project Lead & Core Developer
+- **w2zard** - Project Lead & Core Developer
 
 ### Acknowledgments
 
