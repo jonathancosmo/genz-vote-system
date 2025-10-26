@@ -1,0 +1,29 @@
+{
+  "name": "genz-vote-system",
+  "version": "1.0.0",
+  "description": "A blockchain-inspired voting system prototype for Gen-Z - demonstrating transparent, secure, and verifiable digital voting",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node tests/test-voting.js",
+    "start": "node src/index.js"
+  },
+  "keywords": [
+    "voting",
+    "blockchain",
+    "crypto",
+    "democracy",
+    "genz"
+  ],
+  "author": "w2zard",
+  "license": "MIT",
+  "dependencies": {
+    "crypto": "^1.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jonathancosmo/genz-vote-system.git"
+  }
+}
